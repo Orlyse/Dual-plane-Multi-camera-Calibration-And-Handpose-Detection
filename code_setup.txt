@@ -1,0 +1,33 @@
+Setting up Cameras
+- set mtu
+    sudo ip link set enp7s0 mtu 9000
+- ip addr
+    find the network name
+
+- ip addr show "name"
+    check if ip address has been assigned
+
+- nmcli device show "name"
+    if no ip addresses assigned
+
+    - sudo ip addr add dev "name"
+        then run "nmcli ..." again
+
+    or simply nmcli device connect enp7s0 then for set addresses in spinview
+
+- open spinview to force set IPs
+
+Setup virtual environment
+- python3 -m venv "environment_name" // for now use test_pyspin
+- source test_pyspin/bin/activate
+
+    Download libraries:
+    - pip install "spinnaker_whl_files/spinnaker_python-4.2.0.46-cp310-cp310-linux_x86_64.whl"
+    - pip install opencv-python
+    - pip install numpy==2.2.6
+
+Checking Cameras
+    - spinview
+
+nmcli connection show
+sudo nmcli con add type ethernet ifname enp7s0 con-name FLIR-cameras ipv4.method link-local ipv6.method disabled connection.autoconnect yes

@@ -1,0 +1,77 @@
+
+project = 'hand-demo'
+
+#  model_folder = 'C:\Users\Rupp\Downloads\tuthilllab\anipose\hand-demo-dlc-TuthillLab-2019-08-05'
+model_folder = '/home/spice-lab/Desktop/hand-demo-dlc-TuthillLab-2019-08-05'
+
+nesting = 1
+# video_extension = 'MOV'
+video_extension = 'mp4'
+
+[calibration]
+# checkerboard / charuco / aruco
+board_type = "charuco"
+
+# width and height of grid
+# board_size = [10, 7]
+board_size = [10, 8]
+
+# number of bits in the markers, if aruco/charuco
+board_marker_bits = 4
+
+# number of markers in dictionary, if aruco/charuco
+board_marker_dict_number = 50
+
+# length of marker side
+# board_marker_length = 18.75 # mm
+board_marker_length = 16.00
+
+# If aruco, length of marker separation
+# board_marker_separation_length = 1 # mm
+
+# If charuco or checkerboard, square side length
+# board_square_side_length = 25 # mm
+board_square_side_length = 22
+
+animal_calibration = false
+
+# fisheye = true
+fisheye = false
+
+[labeling]
+scheme = [
+   ["base", "pinky_MCP", "pinky_PIP", "pinky_DIP", "pinky_tip"],
+   ["base", "ring_MCP", "ring_PIP", "ring_DIP", "ring_tip"],
+   ["base", "middle_MCP", "middle_PIP", "middle_DIP", "middle_tip"],
+   ["base", "index_MCP", "index_PIP", "index_DIP", "index_tip"],
+   ["base", "thumb_CMC", "thumb_MCP", "thumb_DIP", "thumb_tip"]
+ ]
+ 
+[triangulation]
+triangulate = true
+cam_regex = '-(cam0[1-4])'
+cam_align = 'cam01'
+ransac = false
+optim = false
+constraints = [
+   ["base", "pinky_MCP"], ["pinky_MCP", "pinky_PIP"], ["pinky_PIP", "pinky_DIP"], ["pinky_DIP", "pinky_tip"],
+   ["base", "ring_MCP"], ["ring_MCP", "ring_PIP"], ["ring_PIP", "ring_DIP"], ["ring_DIP", "ring_tip"],
+   ["base", "middle_MCP"], ["middle_MCP", "middle_PIP"], ["middle_PIP", "middle_DIP"], ["middle_DIP", "middle_tip"],
+   ["base", "index_MCP"], ["index_MCP", "index_PIP"], ["index_PIP", "index_DIP"], ["index_DIP", "index_tip"],
+   ["base", "thumb_CMC"], ["thumb_CMC", "thumb_MCP"], ["thumb_MCP", "thumb_DIP"], ["thumb_DIP", "thumb_tip"]
+]
+
+scale_smooth = 25
+scale_length = 10
+scale_length_weak = 2
+reproj_error_threshold = 3
+score_threshold = 0.6
+n_deriv_smooth = 2
+
+[angles]
+pinky_mcp_flexion = ["base", "pinky_MCP", "pinky_PIP"]
+ring_mcp_flexion = ["base", "ring_MCP", "ring_PIP"]
+middle_mcp_flexion = ["base", "middle_MCP", "middle_PIP"]
+index_mcp_flexion = ["base", "index_MCP", "index_PIP"]
+thumb_mcp_flexion = ["base", "thumb_MCP", "thumb_DIP"]
+

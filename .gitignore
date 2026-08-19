@@ -1,0 +1,44 @@
+# virtualenv
+test_pyspin/
+venv/
+.venv/
+
+# python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# video captures
+*.mp4
+*.avi
+*.raw
+*.jpg
+*.png
+videos-raw/
+videos-combined/
+videos-compare/
+videos-labeled/
+videos-3d/
+images_raw/
+
+
+# data files
+/images
+/videos
+/params
+
+# frame dumps & large arrays
+frames/
+*.npy
+*.npz
+
+# model weights
+*.pt
+*.pth
+*.ckpt
+
+# anipose intermediates
+**/pose-2d/
+**/pose-2d-filtered/
+**/pose-2d-proj/
+EOF
