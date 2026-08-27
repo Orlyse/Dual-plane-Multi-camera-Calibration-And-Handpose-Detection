@@ -523,7 +523,8 @@ scramble frame order across cameras).
 
 - [Kalibr](https://github.com/ethz-asl/kalibr) — multi-camera calibration toolbox (methodological reference)
 - [EasyMocap](https://github.com/zju3dv/EasyMoCap) — multi-view human motion capture (methodological reference)
-- [WiLoR](https://github.com/rolpotamias/WiLoR) — real-time 3D hand pose estimation model used for 2D keypoint detection
+- [WiLoR](https://github.com/rolpotamias/WiLoR) — pose detection library from which wilor-mini is derived
+- [WiLoR-mini](https://github.com/warmshao/WiLoR-mini) — real-time 3D hand pose estimation model used for 2D keypoint detection
 - [Anipose](https://anipose.readthedocs.io/) — markerless 3D pose estimation pipeline built on aniposelib
 - [aniposelib](https://github.com/lambdaloop/aniposelib) — calibration/triangulation library underlying Anipose
 - [OpenCV ArUco/ChArUco module documentation](https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html)
