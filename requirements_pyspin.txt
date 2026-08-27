@@ -1,0 +1,60 @@
+# Environment: pyspin
+# Used for: capture_video.py, extract_video.py, intrinsic_calibrate.py
+# (camera capture via Spinnaker SDK, frame extraction, intrinsic calibration)
+#
+# NOTE: spinnaker-python (PySpin) is NOT installable from PyPI in most cases —
+# it must be installed from the wheel bundled with FLIR's Spinnaker SDK download
+# for your camera model and OS. Install the SDK first, then pip install the
+# matching .whl it provides, THEN install the rest of this file.
+
+absl-py==2.5.0
+annotated-types==0.8.0
+attrs==26.1.0
+blosc2==4.3.3
+certifi==2026.7.22
+cffi==2.1.0
+charset-normalizer==3.4.9
+contourpy==1.3.2
+cycler==0.12.1
+dataclasses==0.6
+EasyPySpin==2.0.1
+flatbuffers==25.12.19
+fonttools==4.63.0
+idna==3.18
+jax==0.6.2
+jaxlib==0.6.2
+keyboard==0.13.5
+kiwisolver==1.5.0
+matplotlib==3.10.9
+mediapipe==0.10.14
+ml_dtypes==0.5.4
+msgpack==1.2.1
+ndindex==1.10.1
+numexpr==2.14.1
+numpy==2.2.6
+opencv-contrib-python==4.13.0.90
+opt_einsum==3.4.0
+packaging==26.2
+pandas==2.3.3
+pillow==12.3.0
+protobuf==4.25.9
+py-cpuinfo==9.0.0
+pycparser==3.0
+pydantic==2.13.4
+pydantic_core==2.46.4
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+pytz==2026.2
+PyYAML==6.0.3
+requests==2.34.2
+scipy==1.15.3
+six==1.17.0
+sounddevice==0.5.5
+# spinnaker-python==4.2.0.46   # install from FLIR Spinnaker SDK wheel, not PyPI
+tables==3.10.1
+threadpoolctl==3.6.0
+toml==0.10.2
+typing_extensions==4.16.0
+typing-inspection==0.4.2
+tzdata==2026.3
+urllib3==2.7.0

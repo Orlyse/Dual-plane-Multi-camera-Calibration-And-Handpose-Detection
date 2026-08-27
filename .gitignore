@@ -28,7 +28,7 @@ images_raw/
 /params
 *.csv
 *.yaml
-*.txt
+
 
 # frame dumps & large arrays
 frames/
@@ -45,4 +45,5 @@ frames/
 **/pose-2d/
 **/pose-2d-filtered/
 **/pose-2d-proj/
+**/pose-3d/
 EOF
