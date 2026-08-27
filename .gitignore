@@ -21,7 +21,7 @@ videos-compare/
 videos-labeled/
 videos-3d/
 images_raw/
-
+anipose/
 
 # data files
 /images
