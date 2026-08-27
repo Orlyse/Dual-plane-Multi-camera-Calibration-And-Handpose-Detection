@@ -110,60 +110,76 @@ sessions from colliding.
 
 ## Environment Setup
 
-This project uses **two separate conda environments** because the camera-capture stack
-(Spinnaker SDK) and the Anipose/DeepLabCut stack have incompatible dependency requirements
-(notably around Python and NumPy versions).
+This project uses **three separate conda environments**. They exist as separate environments
+because their dependencies conflict — WiLoR needs a modern PyTorch/CUDA stack, Anipose's
+tooling (aniposelib, DeepLabCut) is pinned to Python 3.7 and very old NumPy/TensorFlow versions,
+and the camera-capture stack needs whatever Python version FLIR's Spinnaker SDK build supports.
+**Do not try to merge these into one environment** — the pins conflict directly (e.g. `numpy==2.2.6`
+vs `numpy==1.21.6`).
+ 
+Exact, validated package lists for each environment are provided as
+`requirements_pyspin.txt`, `requirements_wilormini.txt`, and `requirements_anipose.txt` in
+this repo; use them for a reproducible setup rather than installing loose/latest versions.
 
 ### 1. `test_pyspin` — camera capture, image extraction, calibration
-
-Used for: `capture_video.py`, `extract_video.py`, `intrinsic_calibrate.py`, and the initial
-extrinsic detection/triangulation logic.
-
+Used for: `capture_video.py`, `extract_video.py`, `intrinsic_calibrate.py`, `triangulate4.py`.
+ 
 ```bash
 conda create -n test_pyspin python=3.10
 conda activate test_pyspin
-
-# Spinnaker SDK + PySpin must be installed manually from FLIR's SDK download
-# (not on PyPI) — see FLIR's Spinnaker SDK documentation for your camera model.
-pip install EasyPySpin
-pip install opencv-contrib-python
-pip install numpy matplotlib pyyaml
+ 
+# Spinnaker SDK + PySpin must be installed FIRST, manually, from FLIR's SDK
+# download for your camera model and OS (not available on PyPI as a normal
+# package) — install the SDK, then pip install the wheel it provides.
+# Only after that:
+pip install -r requirements_pyspin.txt
 ```
 
-**Critical:** install **only** `opencv-contrib-python` — never install `opencv-python` or
-`opencv-python-headless` alongside it in the same environment. Having more than one OpenCV
-variant installed causes silent conflicts where `cv2.aruco` (which lives only in the contrib
-build) becomes inaccessible even though `import cv2` succeeds. If you ever hit
-`AttributeError: module 'cv2.aruco' has no attribute ...` or `module 'cv2.cv2' has no attribute
-'aruco'`, run:
+This environment intentionally includes `mediapipe` alongside `opencv-contrib-python`, in case you
+want to benchmark alternate 2D hand-pose detectors against WiLoR.
+
+### 2. `wilor_mini` — WiLoR 2D hand keypoint detection
+ 
+Used for: `wilor_to_pose2d.py`, wilor_mini_detector.py.
+ 
 ```bash
-pip uninstall opencv-python opencv-contrib-python opencv-python-headless -y
-pip install opencv-contrib-python
+conda create -n wilor_mini python=3.10
+conda activate wilor_mini
+pip install -r requirements-wilor_mini.txt
 ```
-
-### 2. `anipose` — extrinsic bundle adjustment, WiLoR detection, 3D triangulation
-
-Used for: `triangulate4.py` (bundle-adjustment path), `wilor_to_pose2d.py`, and the `anipose` CLI
-itself.
-
+ 
+Requires an NVIDIA GPU with a CUDA 12.4-compatible driver (the `nvidia-*` package pins assume
+this). If you don't have a GPU available, WiLoR will fall back to CPU, but detection will be
+substantially slower.
+ 
+> Note: this environment uses plain `opencv-python`, not `opencv-contrib-python` — it never calls
+> `cv2.aruco`, so the contrib build isn't needed here. Don't "fix" this by adding
+> `opencv-contrib-python` on top of it; that reintroduces the same multi-OpenCV shadowing conflict
+> described below for the `anipose` environment.
+ 
+### 3. `anipose` — extrinsic bundle adjustment, 3D triangulation, Anipose CLI
+ 
+Used for:  Used for the`anipose` CLI itself for the commands (`anipose filter`, `anipose label-2d/anipose label-2d-filter`, `anipose triangulate`, `anipose label-3d`, `anipose label-combined` etc). 
+Additional information about anipose commnands can be found on this link: https://anipose.readthedocs.io/en/latest/tutorial.html (**Note:** Certain commands are not used as different methods were
+used to generate their outputs; further description is provided below.)
+Also includes DeepLabCut as an optional alternate 2D
+detector, if you want to compare it against WiLoR.
+ 
 ```bash
 conda create -n anipose python=3.7
 conda activate anipose
-
-pip install anipose aniposelib
-pip install "opencv-contrib-python==5.0.0.93"   # pinned — see note below
-pip install numpy==1.21.6
-pip install torch tqdm pandas h5py
-pip install wilor-mini   # or install from source per WiLoR's own instructions
+pip install -r requirements-anipose.txt
 ```
-
-**Why a pinned OpenCV version:** `aniposelib` (as of `0.7.2`) still calls a legacy OpenCV ArUco
-API (`cv2.aruco.estimatePoseCharucoBoard`, among others) that was removed in modern OpenCV. This
-repo works around that incompatibility with a small monkey-patch inside `triangulate4.py` (see
-comments in that file) and by using this repo's own `detect_corners()` function instead of
+ 
+**Why the OpenCV version is pinned:** `aniposelib` (as of `0.7.2`) still calls a legacy OpenCV
+ArUco API (`cv2.aruco.estimatePoseCharucoBoard`, among others) that was removed in modern OpenCV.
+This repo works around that incompatibility with a small monkey-patch inside `triangulate4.py`
+(see comments in that file) and by using this repo's own `detect_corners()` function instead of
 aniposelib's internal detector. `opencv-contrib-python==5.0.0.93` is the version this pipeline was
 validated against alongside `numpy==1.21.6` on Python 3.7 — newer OpenCV releases may remove even
-more of the legacy API aniposelib depends on internally.
+more of the legacy API aniposelib depends on internally, and installing any other `opencv-python`/
+`opencv-python-headless` package in this same environment will shadow the working `aruco` module
+(see Troubleshooting).
 
 **Verify your environment after setup:**
 ```bash
@@ -238,8 +254,8 @@ Output: `data/intri_data/params/<DATE_HOUR>/intrinsic_paramstake0-camXX.yaml` (c
 
 **Sanity check:** final RMS reprojection error per camera should typically land under ~0.5px
 after outlier removal. If a camera's RMS stays high or its view count collapses far below the
-others after filtering, that camera's raw calibration data was likely poor — recapture calibration
-video for that camera specifically.
+others after filtering, that camera's raw calibration data was likely poor. Recapture calibration
+video.
 
 ---
 
@@ -251,8 +267,8 @@ Determines each camera's position and orientation relative to camera 0 (the rig'
 ```bash
 python3 capture_video.py record extrinsic
 ```
-This time, the board must be seen by **at least 2 cameras simultaneously** in as many frames as
-possible — ideally get direct co-visibility between *every* camera pair, not just adjacent ones,
+This time, the board must be seen by **at least 2 (3 if possible) cameras simultaneously** in as many frames as
+possible, ideally get direct co-visibility between *every* camera pair, not just adjacent ones,
 since weak or missing pairwise coverage is the single biggest source of extrinsic error.
 
 Output: `data/extri_data/videos/<DATE_HOUR>/take0-camXX.mp4`
@@ -265,19 +281,15 @@ Output: `data/extri_data/images/<DATE_HOUR>/take0-camXX/<NNNNNN>.jpg`
 
 **2c. Run extrinsic calibration** (environment: `anipose`)
 ```bash
-conda activate anipose
 python3 triangulate4.py \
     data/extri_data/images/<DATE_HOUR>/ \
     data/intri_data/params/<INTRINSIC_DATE_HOUR>/ \
-    --out_dir data/extri_data/params/<DATE_HOUR>/
+    --out_dir data/extri_data/params/<DATE_HOUR>
 ```
 This script:
 - Loads each camera's intrinsics from Step 1.
 - Detects the ChArUco board in every extrinsic-capture image using this repo's own detector
   (not aniposelib's — see [Troubleshooting](#aniposelib-detects-nothing-empty-corners)).
-- Runs joint bundle adjustment across all cameras simultaneously (via `aniposelib`'s
-  `CameraGroup.calibrate_rows`), refining every camera's extrinsics using every 2D observation at
-  once, rather than chaining pairwise transforms (which accumulates error hop-by-hop).
 - Validates the result via independent multi-view triangulation of ChArUco corner spacing
   (should triangulate to ~22mm between physically adjacent corners).
 
@@ -286,8 +298,7 @@ Output: `data/extri_data/params/<DATE_HOUR>/multi_camera_calib.npz`,
 `spacing_histogram.png`, `rig_3d.png`
 
 **Sanity check:** open `spacing_histogram.png` — the distribution should peak tightly around
-22mm. A histogram centered far from 22mm (e.g. ~22,000) indicates a units bug (aniposelib works in
-mm; this pipeline's earlier scripts work in meters — see script comments). Also check `rig_3d.png`
+22mm. A histogram centered far from 22mm. Also check `rig_3d.png`
 visually: camera positions/orientations should match your physical rig layout.
 
 ---
@@ -297,16 +308,18 @@ visually: camera positions/orientations should match your physical rig layout.
 Capture the actual behavioral data.
 
 ```bash
-conda activate test_pyspin
+conda activate pyspin
 python3 capture_video.py record handpose
 ```
 Position the hand roughly centered in the rig's shared field of view. Move naturally through the
 hand poses/gestures you want captured.
 
-**Move the resulting videos into the Anipose project structure:**
+Output: `anipose/<DATE_HOUR>/videos-raw/take0-camXX/<NNNNNN>.mp4`
+
+Extract image frames from the handpose videos
 ```bash
-mkdir -p "anipose/<DATE_HOUR>/videos-raw"
-cp data/handpose_data/videos/<DATE_HOUR>/take0-camXX.mp4 "anipose/<DATE_HOUR>/videos-raw/"
+conda activate pyspin
+python3 extract_video.py handpose anipose/<DATE_HOUR>/videos-raw
 ```
 
 ---
@@ -316,14 +329,10 @@ cp data/handpose_data/videos/<DATE_HOUR>/take0-camXX.mp4 "anipose/<DATE_HOUR>/vi
 Runs WiLoR on every synchronized frame across all 4 cameras and writes DeepLabCut-style `.h5`
 files that Anipose's triangulation step reads directly.
 
-First, extract frames from the hand-capture videos the same way as Steps 1–2
-(`extract_video.py`), pointing it at your hand-capture video folder, OR run WiLoR directly against
-extracted image folders if you've already done so.
-
 ```bash
 conda activate anipose
 python3 wilor_to_pose2d.py \
-    --img_root anipose/<DATE_HOUR>/frames \
+    --img_root anipose/<DATE_HOUR>/images-raw \
     --out_dir anipose/<DATE_HOUR>/pose-2d
 ```
 
@@ -341,21 +350,32 @@ data.
 ---
 
 ### Step 5 — Anipose 3D Triangulation
+**Note:** Anipose requires a calibration file which can be obtained by running convert_npz_toml.py in the pyspin environment.
+The last argument is the camera names that need to match what is in config.toml
+```bash
+conda activate pyspin
+python3 convert_npz_toml.py data/extri_data/params/<DATE_HOUR>/multi_camera_calib.npz \
+anipose/<DATE_HOUR>/calibration \
+cam01 cam02 cam03 cam04
+```
 
 Set up an Anipose project `config.toml` (see
 [Anipose Configuration Reference](#anipose-configuration-reference) below) in the `anipose/`
-project root, then place your `calibration.toml` from Step 2 into the expected calibration
-folder for that session (per Anipose's standard project layout).
+project root.
 
 ```bash
 conda activate anipose
 cd anipose/
-anipose calibrate     # optional if you already generated calibration.toml manually in Step 2
+
+anipose filter
+anipose label-2d
 anipose triangulate
+anipose label-3d
+anipose label-combined
+anipose angles
 ```
 
-Output: `anipose/<DATE_HOUR>/pose-3d/` — final triangulated 3D hand keypoints per frame, and
-(if `[triangulation] optim = true`) bone-length- and smoothness-constrained refined trajectories.
+Output: Similar to the outputs detailed in the anipose tutorial (https://anipose.readthedocs.io/en/latest/tutorial.html)
 
 ---
 
