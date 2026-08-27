@@ -12,8 +12,9 @@ __pycache__/
 *.mp4
 *.avi
 *.raw
-*.jpg
-*.png
+overlays/
+images/
+params/
 videos-raw/
 videos-combined/
 videos-compare/
