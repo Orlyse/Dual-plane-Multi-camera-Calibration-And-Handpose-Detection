@@ -26,11 +26,15 @@ images_raw/
 /images
 /videos
 /params
+*.csv
+*.yaml
+*.txt
 
 # frame dumps & large arrays
 frames/
 *.npy
 *.npz
+
 
 # model weights
 *.pt
