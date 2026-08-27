@@ -11,12 +11,12 @@ than 4 cameras.
 
 <table>
   <tr>
-    <td align="center"><img src="docs/IMG_2803.jpg" width="400"><br><sub>Camera 0</sub></td>
-    <td align="center"><img src="docs/Screenshot from 2026-08-27 18-45-12.png" width="400"><br><sub>Camera 1</sub></td>
+    <td align="center"><img src="docs/IMG_2803.jpg" width="400" height="400"><br></td>
+    <td align="center"><img src="docs/Screenshot from 2026-08-27 18-45-12.png" width="400" height="400"></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/error.png" width="400"><br><sub>Camera 2</sub></td>
-    <td align="center"><img src="docs/0009_cam2.jpg" width="400"><br><sub>Camera 3</sub></td>
+    <td align="center"><img src="docs/error.png" width="400" height="400"><br></td>
+    <td align="center"><img src="docs/0009_cam2.jpg" width="400" height="400"></td>
   </tr>
 </table>
 
