@@ -44,7 +44,7 @@ def extract_images(action, video_path):
         param = path[1]
         image_out = f'data/{param}/images/{date}/'
     
-    elif action == 'anipose':
+    elif action == 'handpose':
         assert len(path) == 3, (f"Wrong path input for anipose")
         image_out = f'anipose/{path[1]}/images_raw/'
             
@@ -80,7 +80,7 @@ def extract_images(action, video_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=["calibrate", "anipose"], help="purpose")
+    parser.add_argument('action', choices=["calibrate", "handpose"], help="purpose")
     parser.add_argument('video_path', type=str, help="videos path")
     
     args = parser.parse_args()

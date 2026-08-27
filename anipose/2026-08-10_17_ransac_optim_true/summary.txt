@@ -1,0 +1,55 @@
+anipose/2026-08-10_17_ransac_optim_true/pose-3d/take0.csv: 423 frames, 21 joints
+output -> anipose/2026-08-10_17_ransac_optim_true//
+
+=== coverage ===
+  0 cameras:      0 joint-frames (  0.0%)
+  1 cameras:      0 joint-frames (  0.0%)
+  2 cameras:     21 joint-frames (  0.2%)
+  3 cameras:    819 joint-frames (  9.2%)
+  4 cameras:   8043 joint-frames ( 90.5%)
+  measured (>=2): 8883 / 8883 (100.0%)
+  frames with all 21 joints measured: 100.0%
+
+=== reprojection error (measured points) ===
+  ncams=2: median  14.80 px, 90th  31.17 px  (n=21)
+  ncams=3: median  16.54 px, 90th  42.77 px  (n=819)
+  ncams=4: median  11.22 px, 90th  32.48 px  (n=8043)
+  overall: median 11.58 px, 90th 33.65 px
+           ~= 11.1 mm at 0.8 m (fx=837)
+
+=== error vs hand speed ===
+  correlation = +0.098 (n=422 frames)
+   0.003- 0.011 m/s: median  12.56 px (n=53)
+   0.011- 0.014 m/s: median  10.24 px (n=53)
+   0.014- 0.017 m/s: median   9.26 px (n=52)
+   0.017- 0.022 m/s: median  10.31 px (n=53)
+   0.022- 0.028 m/s: median  10.85 px (n=53)
+   0.028- 0.035 m/s: median  14.36 px (n=52)
+   0.035- 0.048 m/s: median  14.11 px (n=53)
+   0.048- 0.293 m/s: median  11.99 px (n=53)
+
+=== bone lengths as measured (ranked by consistency) ===
+  bone                median      std      CV      n
+  thumb_DIP->thumb_tip    28.5mm    0.0mm    0.0%    423
+  thumb_MCP->thumb_DIP    23.0mm    0.0mm    0.0%    423
+  thumb_CMC->thumb_MCP    25.9mm    0.0mm    0.0%    423
+  pinky_DIP->pinky_tip    16.5mm    0.0mm    0.0%    423
+  base->thumb_CMC     32.7mm    0.0mm    0.0%    423
+  pinky_MCP->pinky_PIP    19.0mm    0.0mm    0.0%    423
+  index_MCP->index_PIP    30.3mm    0.0mm    0.0%    423
+  ring_MCP->ring_PIP    27.3mm    0.0mm    0.0%    423
+  ring_PIP->ring_DIP    22.5mm    0.0mm    0.0%    423
+  middle_MCP->middle_PIP    30.0mm    0.0mm    0.0%    423
+  pinky_PIP->pinky_DIP    16.4mm    0.0mm    0.0%    423
+  middle_PIP->middle_DIP    20.8mm    0.0mm    0.0%    423
+  index_PIP->index_DIP    19.7mm    0.0mm    0.1%    423
+  base->pinky_MCP     70.4mm    0.0mm    0.1%    423
+  base->ring_MCP      74.8mm    0.1mm    0.1%    423
+  base->middle_MCP    82.7mm    0.1mm    0.1%    423
+  index_DIP->index_tip    21.0mm    0.0mm    0.1%    423
+  middle_DIP->middle_tip    21.7mm    0.0mm    0.1%    423
+  base->index_MCP     78.2mm    0.1mm    0.1%    423
+  ring_DIP->ring_tip    21.3mm    0.1mm    0.3%    423
+  median CV across bones: 0.0%  (lower = more rigid, more consistent reconstruction)
+
+best-covered frame: 8

@@ -51,7 +51,7 @@ scheme = [
 triangulate = true
 cam_regex = '-(cam0[1-4])'
 cam_align = 'cam01'
-ransac = false
+ransac = true
 optim = false
 constraints = [
    ["base", "pinky_MCP"], ["pinky_MCP", "pinky_PIP"], ["pinky_PIP", "pinky_DIP"], ["pinky_DIP", "pinky_tip"],

@@ -15,7 +15,7 @@ Outputs (into --out-dir):
   summary.txt         the console output, saved
 
 Usage:
-  python analyze_pose3d.py path/to/pose-3d/take0.csv --fps 10 --fx 837
+  python triangulation_check_anipose.py path/to/pose-3d/take0.csv --fps 10 --fx 837
 """
 
 import argparse

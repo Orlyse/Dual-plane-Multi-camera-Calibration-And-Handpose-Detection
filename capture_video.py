@@ -126,7 +126,7 @@ def open_video_capture(action_type, param_type=None):
                 break
         elif (action_type == 'calibrate'):
             cv2.waitKey(1)
-            if (param_type == "intrinsic" and (time.time() - start_time) >= 60):
+            if (param_type == "intrinsic" and (time.time() - start_time) >= 80):
                 print(f'Saved vides to : {outdir}')
                 break
             elif (param_type == "extrinsic" and (time.time() - start_time) >= 60):
@@ -134,7 +134,7 @@ def open_video_capture(action_type, param_type=None):
                 break
         else:
             cv2.waitKey(1)
-            if (time.time() - start_time >= 20):
+            if (time.time() - start_time >= 15):
                 print(f'Saved vides to : {outdir}')
                 break
 

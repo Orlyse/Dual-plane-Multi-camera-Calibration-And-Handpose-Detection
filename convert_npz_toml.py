@@ -103,8 +103,10 @@ def main():
     now = datetime.now()
     # outdir = f"anipose/{str(now.date())}_{str(now.hour)}/calibration/"
     outdir = args.out_toml
+
+    assert len(outdir.split('/')) == 3, (f"Wrong path input for out, remove / at the end")
     os.makedirs(outdir, exist_ok=True)
-    file_path = outdir + "calibration.toml"
+    file_path = outdir + "/calibration.toml"
 
     with open(file_path, "w") as f:
         f.write("\n".join(blocks) + "\n" + meta)
