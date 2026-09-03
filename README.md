@@ -33,6 +33,7 @@ than 4 cameras.
 7. [Anipose Configuration Reference](#anipose-configuration-reference)
 8. [Troubleshooting](#troubleshooting)
 9. [References](#references)
+10. [Future Improvements](#future-improvements)
 
 ---
 
@@ -539,3 +540,19 @@ scramble frame order across cameras).
 - [Anipose](https://anipose.readthedocs.io/) — markerless 3D pose estimation pipeline built on aniposelib
 - [aniposelib](https://github.com/lambdaloop/aniposelib) — calibration/triangulation library underlying Anipose
 - [OpenCV ArUco/ChArUco module documentation](https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html)
+
+## Future Improvements
+### **1. Hardware**
+The current setup uses BFS-PGE-23S3C-C PoE GigE Blackfly S cameras, which use the Sony IMX392 image sensor. Though the sensor has a global shutter, 
+is designed to sustain motion blur and has a high resolution; better sensors with even better capabilities would improve triangulation results.
+Features like spatial resolution for better imaging at further distances, sensor format for better lighting, and advanced trigger logic for better exposure
+would provide better images given varying lighting conditions in the lab, fast hand or Charuco board motion, and a multi-camera rig targeting different planes.
+Some sensors with better functionalities that could be tested include the Sony IMX540, Onsemi AR0234CS, and others. 
+
+### **2. Software (Hand detection model)**
+This repo uses a portion of the WiLoR full-body detection model, Wilor-mini, which only focuses on hand detection. 
+However, unlike MediaPipe, Wilor does not provide a confidence value per hand detection. This is a huge downside that significantly impacts the current implementation and limits
+our ability to remove outliers. Different workarounds have been applied to account for this issue, but a model as advanced as WiLoR with detection
+confidence values would significantly impact the program's triangulation and 3d hand detection.
+
+
